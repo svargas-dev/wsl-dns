@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Modified from the [Microsoft Docs](# https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#wsl-has-no-network-connectivity-once-connected-to-a-vpn)
+
+readonly WSL_CONF="/etc/wsl.conf"
+if [ -f "$WSL_CONF.bak" ]; then
+  sudo cp -p $WSL_CONF.bak $WSL_CONF
+  echo "$WSL_CONF restored  $WSL_CONF.bak"
+else
+  echo "$WSL_CONF.bak: No such file or directory."
+  echo "Did you run updatedns first?"
+fi
+
+readonly RESOLV_CONF="/etc/resolv.conf"
+sudo mv $RESOLV_CONF $RESOLV_CONF.new
+sudo ln -s /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+echo "$RESOLV_CONF restored"
+
+echo "DNS resolver changes successfully reverted!"
+echo "Please reboot for changes to take effect"
+
